@@ -5,7 +5,5 @@ vec4 main(std::Texture2d tex) {
 
 	vec4 fragColor = tex.sample(UV);
 
-    float avg = 0.2126 * fragColor.r + 0.7152 * fragColor.g + 0.0722 * fragColor.b;
-
-	return vec4(vec3(avg), fragColor.a);
+	return vec4(vec3(1.0) - fragColor.rgb, 1.0);
 }
