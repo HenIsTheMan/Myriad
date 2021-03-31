@@ -3,7 +3,7 @@ import Materials from 'Materials'
 import Scene from 'Scene';
 
 (async function () {
-    var currIndex = 0;
+    var currIndex: number = 0;
 
     const rect = await Scene.root.findFirst('Rect') as Mesh;
     const mtls = await Materials.getAll() as MaterialBase[];
