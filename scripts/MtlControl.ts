@@ -36,21 +36,20 @@ import Diagnostics from 'Diagnostics';
 
 
     TouchGestures.onTap(rect).subscribe((event: TapGesture) => {
-        Diagnostics.log('I am a console message logged from the script');
+        Diagnostics.log(mtls.length);
 
         if(currIndex == mtls.length - 1) {
-            ++currIndex;
-        } else {
             currIndex = 0;
+        } else {
+            ++currIndex;
         }
+
+        rect.material = mtls[currIndex];
     });
 
     //const plane = await Scene.root.findFirst('plane0') as Plane;
 
     //TouchGestures.onTap(plane).subscribe(MyCallback);
-
-
-    rect.material = mtls[currIndex];
 
     // To access scene objects
     // const [directionalLight] = await Promise.all([
