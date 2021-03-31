@@ -27,12 +27,15 @@ import Diagnostics from 'Diagnostics';
 // import { animationDuration } from './script.js'
 
 (async function () {  // Enables async/await in JS [part 1]
-    var currIndex = 1;
+    var currIndex = 0;
 
     const rect = await Scene.root.findFirst('Rect') as Mesh;
     const mtls = await Materials.getAll() as MaterialBase[];
 
-    /*TouchGestures.onTap(rect).subscribe((gesture) => {
+
+
+
+    TouchGestures.onTap(rect).subscribe((event: TapGesture) => {
         Diagnostics.log('I am a console message logged from the script');
 
         if(currIndex == mtls.length - 1) {
@@ -40,7 +43,12 @@ import Diagnostics from 'Diagnostics';
         } else {
             currIndex = 0;
         }
-    });*/
+    });
+
+    //const plane = await Scene.root.findFirst('plane0') as Plane;
+
+    //TouchGestures.onTap(plane).subscribe(MyCallback);
+
 
     rect.material = mtls[currIndex];
 
