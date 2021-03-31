@@ -1,5 +1,3 @@
-#import <utils>
-
 vec4 main(std::Texture2d tex) {
 	vec2 UV = fragment(std::getVertexTexCoord());
 
