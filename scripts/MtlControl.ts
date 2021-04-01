@@ -2,6 +2,10 @@ import TouchGestures from 'TouchGestures';
 import Materials from 'Materials'
 import Scene from 'Scene';
 
+import {
+    TextChange
+} from './LabelControl'
+
 export var currIndex: number = 0;
 
 (async function () {
@@ -18,5 +22,7 @@ export var currIndex: number = 0;
         } while(mtls[currIndex].name == "NoobMtl");
 
         rect.material = mtls[currIndex];
+
+        TextChange(rect, mtls);
     });
 })();
