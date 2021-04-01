@@ -14,13 +14,13 @@ function Lerp(start: number, end: number, lerpFactor: number): number {
 export function LabelChange(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh): void {
     var text: string;
 
-    rect.getMaterial().then((rectMtl: MaterialBase) => {
+    rect.getMaterial().then((rectMtl: MaterialBase): void => {
         text = rectMtl.name;
         text = text.substr(0, text.length - 3);
 
         var limit: number = text.length;
-        for (var i: number = 1; i < limit; ++i) {
-            if (text[i] == text[i].toUpperCase()) { //If UpperCase...
+        for(var i: number = 1; i < limit; ++i) {
+            if(text[i] == text[i].toUpperCase()) { //If UpperCase...
                 text = text.substring(0, i) + ' ' + text.substring(i, limit);
                 ++limit;
                 i += 2;
@@ -48,10 +48,10 @@ export function LabelChange(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh): v
 
             currAlpha = Lerp(startAlpha, endAlpha, Math.min(1, animTime / animDuration));
 
-            labelMesh.getMaterial().then((myMtl: MaterialBase) => {
+            labelMesh.getMaterial().then((myMtl: MaterialBase): void => {
                 myMtl.opacity = Reactive.val(currAlpha);
             });
-            labelTextMesh.getMaterial().then((myMtl: MaterialBase) => {
+            labelTextMesh.getMaterial().then((myMtl: MaterialBase): void => {
                 myMtl.opacity = Reactive.val(currAlpha);
             });
 
@@ -64,14 +64,14 @@ export function LabelChange(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh): v
     BlockingAction.startCoroutine(MyRoutine);
 }
 
-(async function () {
+(async function(): Promise<void> {
     const canvas: Canvas = await Scene.root.findFirst('Canvas') as Canvas;
     const label: Canvas = await Scene.root.findFirst('Label') as Canvas;
 
     label.transform.x = canvas.width.mul(0.5).sub(label.bounds.width.mul(0.5));
     label.transform.y = canvas.height.mul(0.5).sub(label.bounds.height.mul(0.5));
 
-    const rect = await Scene.root.findFirst('Rect') as Mesh;
+    const rect: Mesh = await Scene.root.findFirst('Rect') as Mesh;
     const labelMesh: Mesh = await Scene.root.findFirst('Label') as Mesh;
     const labelTextMesh: Mesh = await Scene.root.findFirst('LabelText') as Mesh;
 
