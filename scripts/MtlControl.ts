@@ -2,6 +2,17 @@ import TouchGestures from 'TouchGestures';
 import Materials from 'Materials'
 import Scene from 'Scene';
 
+import Diagnostics from 'Diagnostics';
+import { BlockingAction, Wait } from './BlockingAction';
+
+function* MyRoutine(): IterableIterator<BlockingAction> {
+    let time = new Date().getTime();
+    Diagnostics.log('Time to wait for 3 sec');
+    yield new Wait(3000);
+    Diagnostics.log('This was a blocking call!');
+    Diagnostics.log('The time taken was: ' + (new Date().getTime() - time));
+}
+
 import {
     LabelChange
 } from './LabelControl'
@@ -22,6 +33,8 @@ export var currIndex: number = 0;
         } while(mtls[currIndex].name == "NoobMtl");
 
         rect.material = mtls[currIndex];
+
+        BlockingAction.startCoroutine(MyRoutine);
 
         LabelChange(mtls);
     });
