@@ -1,8 +1,10 @@
 abstract class Easing {
-    protected static readonly c1 = 1.70158;
-    protected static readonly c3 = Easing.c1 + 1.0;
+    protected static c1: number;
+    protected static c3: number;
 
     constructor() {
+        Easing.c1 = 1.70158;
+        Easing.c3 = Easing.c1 + 1.0;
     }
 
     abstract Ease(x: number): number;
