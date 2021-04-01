@@ -2,6 +2,9 @@ import TouchGestures from 'TouchGestures';
 import Materials from 'Materials';
 import Scene from 'Scene';
 import NativeUI from 'NativeUI';
+import Reactive from 'Reactive';
+import CameraInfo from 'CameraInfo';
+
 import Diagnostics from 'Diagnostics';
 
 import {
@@ -9,22 +12,17 @@ import {
 } from './MtlControl'
 
 (async function () {
-    //* Label Bg
-    /*var screenWidth: number = 0;
-    var screenHeight: number = 0;
+    const screenMinPt = Reactive.point2d(
+        Reactive.val(0),
+        Reactive.val(0)
+    )
+    const screenMaxPt = Reactive.point2d(
+        CameraInfo.previewSize.width,
+        CameraInfo.previewSize.height
+    )
 
-    Scene.root.find('Canvas').bounds.height.monitor({ fireOnInitialValue: true }).subscribe(function (height) {
-        screen_height = height.newValue;
-    });
-
-    Scene.root.find('Canvas').bounds.width.monitor({ fireOnInitialValue: true }).subscribe(function (width) {
-        screen_width = width.newValue;
-    });*/
-    //*/
-
-    //* LabelText
-    const rect = await Scene.root.findFirst('Rect') as Mesh;
-    const mtls = await Materials.getAll() as MaterialBase[];
+    const rect: Mesh = await Scene.root.findFirst('Rect') as Mesh;
+    const mtls: MaterialBase[] = await Materials.getAll() as MaterialBase[];
 
     let TextChange = (): void => {
         var text: string = mtls[currIndex].name;
@@ -46,7 +44,11 @@ import {
     TextChange();
 
     TouchGestures.onLongPress(rect).subscribe((event: LongPressGesture) => {
+        Diagnostics.log(screenMaxPt.x.pinLastValue());
+        Diagnostics.log(screenMinPt.x.pinLastValue());
+        Diagnostics.log(screenMaxPt.y.pinLastValue());
+        Diagnostics.log(screenMinPt.y.pinLastValue());
+
         TextChange();
     });
-    //*/
 })();
