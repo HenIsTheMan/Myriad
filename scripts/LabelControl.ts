@@ -12,14 +12,11 @@ import {
 } from './MtlControl'
 
 (async function () {
-    const screenMinPt = Reactive.point2d(
-        Reactive.val(0),
-        Reactive.val(0)
-    )
-    const screenMaxPt = Reactive.point2d(
-        CameraInfo.previewSize.width,
-        CameraInfo.previewSize.height
-    )
+    const canvas: Canvas = await Scene.root.findFirst('Canvas') as Canvas;
+    const label: Mesh = await Scene.root.findFirst('Label') as Mesh;
+
+    label.transform.x = canvas.width.mul(0.5);
+    label.transform.y = canvas.height.mul(0.5);
 
     const rect: Mesh = await Scene.root.findFirst('Rect') as Mesh;
     const mtls: MaterialBase[] = await Materials.getAll() as MaterialBase[];
@@ -44,11 +41,6 @@ import {
     TextChange();
 
     TouchGestures.onLongPress(rect).subscribe((event: LongPressGesture) => {
-        Diagnostics.log(screenMaxPt.x.pinLastValue());
-        Diagnostics.log(screenMinPt.x.pinLastValue());
-        Diagnostics.log(screenMaxPt.y.pinLastValue());
-        Diagnostics.log(screenMinPt.y.pinLastValue());
-
         TextChange();
     });
 })();
