@@ -25,6 +25,6 @@ export var currIndex: number = 0;
 
         rect.material = mtls[currIndex];
 
-        LabelChange(labelMesh, labelTextMesh, mtls);
+        LabelChange(labelMesh, labelTextMesh, rect);
     });
 })();
