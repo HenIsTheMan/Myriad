@@ -1,25 +1,32 @@
 import Materials from 'Materials';
 import Scene from 'Scene';
 import NativeUI from 'NativeUI';
+import Reactive from 'Reactive';
 
 import {
     BlockingAction,
     Wait
 } from './BlockingAction'
 
-function* MyRoutine(): IterableIterator<BlockingAction> {
-    yield new Wait(3000);
-}
-
 import {
     currIndex
 } from './MtlControl'
 
-export function LabelChange(mtls: MaterialBase[]): void {
+export function LabelChange(labelMesh: Mesh, labelTextMesh: Mesh, mtls: MaterialBase[]): void {
+    function* MyRoutine(): IterableIterator<BlockingAction> {
+        yield new Wait(3000);
+
+        labelMesh.getMaterial().then((myMtl: MaterialBase) => {
+            myMtl.opacity = Reactive.val(0.4);
+        });
+        labelTextMesh.getMaterial().then((myMtl: MaterialBase) => {
+            myMtl.opacity = Reactive.val(0.4);
+        });
+    }
+
     BlockingAction.startCoroutine(MyRoutine);
 
     var text: string = mtls[currIndex].name;
-
     text = text.substr(0, text.length - 3);
 
     var limit: number = text.length;
@@ -35,18 +42,15 @@ export function LabelChange(mtls: MaterialBase[]): void {
 }
 
 (async function () {
-    //* Bg
     const canvas: Canvas = await Scene.root.findFirst('Canvas') as Canvas;
     const label: Canvas = await Scene.root.findFirst('Label') as Canvas;
 
     label.transform.x = canvas.width.mul(0.5).sub(label.bounds.width.mul(0.5));
     label.transform.y = canvas.height.mul(0.5).sub(label.bounds.height.mul(0.5));
-    //*/
 
-    //* Text
-    const rect: Mesh = await Scene.root.findFirst('Rect') as Mesh;
     const mtls: MaterialBase[] = await Materials.getAll() as MaterialBase[];
+    const labelMesh: Mesh = await Scene.root.findFirst('Label') as Mesh;
+    const labelTextMesh: Mesh = await Scene.root.findFirst('LabelText') as Mesh;
 
-    LabelChange(mtls);
-    //*/
+    LabelChange(labelMesh, labelTextMesh, mtls);
 })();

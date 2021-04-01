@@ -1,16 +1,6 @@
 import TouchGestures from 'TouchGestures';
 import Materials from 'Materials'
 import Scene from 'Scene';
-import Reactive from 'Reactive';
-
-import {
-    BlockingAction,
-    Wait
-} from './BlockingAction'
-
-function* MyRoutine(): IterableIterator<BlockingAction> {
-    yield new Wait(3000);
-}
 
 import {
     LabelChange
@@ -21,6 +11,8 @@ export var currIndex: number = 0;
 (async function () {
     const rect = await Scene.root.findFirst('Rect') as Mesh;
     const mtls = await Materials.getAll() as MaterialBase[];
+    const labelMesh: Mesh = await Scene.root.findFirst('Label') as Mesh;
+    const labelTextMesh: Mesh = await Scene.root.findFirst('LabelText') as Mesh;
 
     TouchGestures.onLongPress(rect).subscribe((event: LongPressGesture) => {
         do {
@@ -29,20 +21,10 @@ export var currIndex: number = 0;
             } else {
                 ++currIndex;
             }
-        } while(mtls[currIndex].name == "NoobMtl");
+        } while(mtls[currIndex].name == "BgMtl" || mtls[currIndex].name == "TextMtl");
 
         rect.material = mtls[currIndex];
 
-
-
-        rect.getMaterial().then((myMtl: MaterialBase) => {
-            myMtl.opacity = Reactive.val(0.4);
-        });
-
-
-
-        BlockingAction.startCoroutine(MyRoutine);
-
-        LabelChange(mtls);
+        LabelChange(labelMesh, labelTextMesh, mtls);
     });
 })();
