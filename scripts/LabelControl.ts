@@ -2,7 +2,6 @@ import Materials from 'Materials';
 import Scene from 'Scene';
 import NativeUI from 'NativeUI';
 import Reactive from 'Reactive';
-import Time from 'Time';
 
 import {
     BlockingAction,
@@ -19,39 +18,33 @@ function Lerp(start: number, end: number, lerpFactor: number): number {
 
 export function LabelChange(labelMesh: Mesh, labelTextMesh: Mesh, mtls: MaterialBase[]): void {
     function* MyRoutine(): IterableIterator<BlockingAction> {
-        const animDuration: number = 0.7;
+        const animDuration: number = 10.0;
         var animTime: number = 0.0;
 
         var currElapsedTime: number = 0.0;
-        var prevElapsedTime: number = 0.0;
+        var prevElapsedTime: number = new Date().getTime() / 1000;
 
         var currAlpha: number = 0.0;
         const startAlpha: number = 1.0;
         const endAlpha: number = 0.0;
 
-        for(;;) {
-            currElapsedTime = Time.ms.pinLastValue();
+        while(animDuration >= animTime) {
+            currElapsedTime = new Date().getTime() / 1000;
 
-            if(animDuration >= animTime) {
-                animTime += currElapsedTime - prevElapsedTime;
+            animTime += currElapsedTime - prevElapsedTime;
 
-                currAlpha = Lerp(startAlpha, endAlpha, Math.min(1, animTime / animDuration));
+            currAlpha = Lerp(startAlpha, endAlpha, Math.min(1, animTime / animDuration));
 
-                labelMesh.getMaterial().then((myMtl: MaterialBase) => {
-                    myMtl.opacity = Reactive.val(currAlpha);
-                });
-                labelTextMesh.getMaterial().then((myMtl: MaterialBase) => {
-                    myMtl.opacity = Reactive.val(currAlpha);
-                });
+            labelMesh.getMaterial().then((myMtl: MaterialBase) => {
+                myMtl.opacity = Reactive.val(currAlpha);
+            });
+            labelTextMesh.getMaterial().then((myMtl: MaterialBase) => {
+                myMtl.opacity = Reactive.val(currAlpha);
+            });
 
-                prevElapsedTime = currElapsedTime;
+            prevElapsedTime = currElapsedTime;
 
-                //yield null;
-
-                yield new Wait(0);
-            } else {
-                break;
-            }
+            yield new Wait(0);
         }
     }
 
