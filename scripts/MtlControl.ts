@@ -9,11 +9,13 @@ export var currIndex: number = 0;
     const mtls = await Materials.getAll() as MaterialBase[];
 
     TouchGestures.onLongPress(rect).subscribe((event: LongPressGesture) => {
-        if(currIndex == mtls.length - 1) {
-            currIndex = 0;
-        } else {
-            ++currIndex;
-        }
+        do {
+            if (currIndex == mtls.length - 1) {
+                currIndex = 0;
+            } else {
+                ++currIndex;
+            }
+        } while(mtls[currIndex].name == "NoobMtl");
 
         rect.material = mtls[currIndex];
     });
