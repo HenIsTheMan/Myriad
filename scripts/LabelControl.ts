@@ -2,6 +2,7 @@ import Materials from 'Materials';
 import Scene from 'Scene';
 import NativeUI from 'NativeUI';
 import Reactive from 'Reactive';
+import Time from 'Time';
 
 import {
     BlockingAction,
@@ -12,16 +13,46 @@ import {
     currIndex
 } from './MtlControl'
 
+function Lerp(start: number, end: number, lerpFactor: number): number {
+    return (1 - lerpFactor) * start + lerpFactor * end;
+}
+
 export function LabelChange(labelMesh: Mesh, labelTextMesh: Mesh, mtls: MaterialBase[]): void {
     function* MyRoutine(): IterableIterator<BlockingAction> {
-        yield new Wait(3000);
+        const animDuration: number = 0.7;
+        var animTime: number = 0.0;
 
-        labelMesh.getMaterial().then((myMtl: MaterialBase) => {
-            myMtl.opacity = Reactive.val(0.4);
-        });
-        labelTextMesh.getMaterial().then((myMtl: MaterialBase) => {
-            myMtl.opacity = Reactive.val(0.4);
-        });
+        var currElapsedTime: number = 0.0;
+        var prevElapsedTime: number = 0.0;
+
+        var currAlpha: number = 0.0;
+        const startAlpha: number = 1.0;
+        const endAlpha: number = 0.0;
+
+        for(;;) {
+            currElapsedTime = Time.ms.pinLastValue();
+
+            if(animDuration >= animTime) {
+                animTime += currElapsedTime - prevElapsedTime;
+
+                currAlpha = Lerp(startAlpha, endAlpha, Math.min(1, animTime / animDuration));
+
+                labelMesh.getMaterial().then((myMtl: MaterialBase) => {
+                    myMtl.opacity = Reactive.val(currAlpha);
+                });
+                labelTextMesh.getMaterial().then((myMtl: MaterialBase) => {
+                    myMtl.opacity = Reactive.val(currAlpha);
+                });
+
+                prevElapsedTime = currElapsedTime;
+
+                //yield null;
+
+                yield new Wait(0);
+            } else {
+                break;
+            }
+        }
     }
 
     BlockingAction.startCoroutine(MyRoutine);
