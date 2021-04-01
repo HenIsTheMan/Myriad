@@ -3,10 +3,21 @@ import Scene from 'Scene';
 import NativeUI from 'NativeUI';
 
 import {
+    BlockingAction,
+    Wait
+} from './BlockingAction'
+
+function* MyRoutine(): IterableIterator<BlockingAction> {
+    yield new Wait(3000);
+}
+
+import {
     currIndex
 } from './MtlControl'
 
 export function LabelChange(mtls: MaterialBase[]): void {
+    BlockingAction.startCoroutine(MyRoutine);
+
     var text: string = mtls[currIndex].name;
 
     text = text.substr(0, text.length - 3);
