@@ -6,7 +6,7 @@ import {
     currIndex
 } from './MtlControl'
 
-export function TextChange(rect: Mesh, mtls: MaterialBase[]): void {
+export function LabelChange(mtls: MaterialBase[]): void {
     var text: string = mtls[currIndex].name;
 
     text = text.substr(0, text.length - 3);
@@ -36,6 +36,6 @@ export function TextChange(rect: Mesh, mtls: MaterialBase[]): void {
     const rect: Mesh = await Scene.root.findFirst('Rect') as Mesh;
     const mtls: MaterialBase[] = await Materials.getAll() as MaterialBase[];
 
-    TextChange(rect, mtls);
+    LabelChange(mtls);
     //*/
 })();

@@ -3,7 +3,7 @@ import Materials from 'Materials'
 import Scene from 'Scene';
 
 import {
-    TextChange
+    LabelChange
 } from './LabelControl'
 
 export var currIndex: number = 0;
@@ -23,6 +23,6 @@ export var currIndex: number = 0;
 
         rect.material = mtls[currIndex];
 
-        TextChange(rect, mtls);
+        LabelChange(mtls);
     });
 })();
