@@ -2,22 +2,21 @@ import TouchGestures from 'TouchGestures';
 import Materials from 'Materials';
 import Scene from 'Scene';
 import NativeUI from 'NativeUI';
-import Reactive from 'Reactive';
-import CameraInfo from 'CameraInfo';
-
-import Diagnostics from 'Diagnostics';
 
 import {
     currIndex
 } from './MtlControl'
 
 (async function () {
+    //* Bg
     const canvas: Canvas = await Scene.root.findFirst('Canvas') as Canvas;
-    const label: Mesh = await Scene.root.findFirst('Label') as Mesh;
+    const label: Canvas = await Scene.root.findFirst('Label') as Canvas;
 
-    label.transform.x = canvas.width.mul(0.5);
-    label.transform.y = canvas.height.mul(0.5);
+    label.transform.x = canvas.width.mul(0.5).sub(label.bounds.width.mul(0.5));
+    label.transform.y = canvas.height.mul(0.5).sub(label.bounds.height.mul(0.5));
+    //*/
 
+    //* Text
     const rect: Mesh = await Scene.root.findFirst('Rect') as Mesh;
     const mtls: MaterialBase[] = await Materials.getAll() as MaterialBase[];
 
@@ -43,4 +42,5 @@ import {
     TouchGestures.onLongPress(rect).subscribe((event: LongPressGesture) => {
         TextChange();
     });
+    //*/
 })();
