@@ -14,7 +14,7 @@ namespace {
     };
 }
 
-/*float[9] CreateGaborKernel(float size, float sigma, float lambda, float theta, float psi, float gamma){
+void MyFunc(inout float kernel[9], float size, float sigma, float lambda, float theta, float psi, float gamma){
     float sigmaX = sigma;
     float sigmaY = sigma / gamma;
 
@@ -27,29 +27,32 @@ namespace {
     float xMin = -xMax;
     float yMin = -yMax;
 
-    List<int> xValues = Matrix.Vector(xMin, xMax, increment: 1);
-    List<int> yValues = Matrix.Vector(yMin, yMax, increment: 1);
+    //List<int> xValues = Matrix.Vector(xMin, xMax, increment: 1);
+    //List<int> yValues = Matrix.Vector(yMin, yMax, increment: 1);
 
-    return new Matrix(xValues.Count, yValues.Count);
-}*/
+    //return new Matrix(xValues.Count, yValues.Count);
+}
 
-void Test(inout float kernel[9]){
+void Test(inout float kernel[9], float theta){
+    float u = 55.0;
+    float v = 85.0;
+
     float pi = 3.14;
     float fmax = 0.25;
     float gamma = sqrt(2.0);
     float eta = sqrt(2.0);
 
-    float fu = fmax; //??
+    float fu = fmax / (sqrt(0.6) * sqrt(0.6)); //i - 1
     float alpha = fu/gamma;
     float beta = fu/eta;
 
-    float tetav = pi; //??
+    float tetav = theta; //j - 1 //rad
 
     float m = 3.0;
     float n = 3.0;
 
-    for(float x = 1.0; x <= m; ++x){
-        for(float y = 1.0; y <= n; ++y){
+    for(float x = 1.0; x <= 3.0; ++x){
+        for(float y = 1.0; y <= 3.0; ++y){
             float xprime = (x-((m + 1.0) * 0.5))*cos(tetav)+(y-((n + 1.0) * 0.5)) * sin(tetav);
             float yprime = -(x-((m + 1.0) * 0.5))*sin(tetav)+(y-((n + 1.0) * 0.5)) * cos(tetav);
             kernel[(int(y) - 1) * 3 + (int(x) - 1)] = ((fu * fu) / (pi * gamma * eta)) * exp(-((alpha * alpha) * (xprime * xprime) + (beta * beta) * (yprime * yprime))) * exp(2.0 * pi * fu * xprime);
@@ -73,7 +76,10 @@ vec4 main(std::Texture2d tex) {
     const float sharpenForce = 2.0;
 
     float kernel[9];
-    Test(kernel);
+    //MyFunc(kernel, 3, 8.0, 3.14, pi / 4.0 * 0.0, sqrt(2.0));
+    for(float i = 0.0; i <= 5.0; ++i){
+        Test(kernel, 3.14 * i / 5.0);
+    }
 
 	return ApplyKernel(tex, fragment(std::getVertexTexCoord()), offsets, kernel);
 }
