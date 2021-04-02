@@ -1,9 +1,9 @@
 import Time from 'Time';
 
-export abstract class BlockingAction {
-    abstract Setup(iter: IterableIterator<BlockingAction>): void;
+export abstract class Wait {
+    abstract Setup(iter: IterableIterator<Wait>): void;
 
-    public static HandleNext(iter: IterableIterator<BlockingAction>): void {
+    public static HandleNext(iter: IterableIterator<Wait>): void {
         let n = iter.next();
         if (n.done) {
             return;
@@ -13,7 +13,7 @@ export abstract class BlockingAction {
     };
 }
 
-export class Wait extends BlockingAction {
+export class WaitForMilliseconds extends Wait {
     private waitTime: number;
 
     constructor(waitTime: number) {
@@ -21,13 +21,13 @@ export class Wait extends BlockingAction {
         this.waitTime = waitTime;
     }
 
-    Setup(iter: IterableIterator<BlockingAction>): void {
+    Setup(iter: IterableIterator<Wait>): void {
         let timerID = Time.setTimeout(function (): void {
-            BlockingAction.HandleNext(iter);
+            Wait.HandleNext(iter);
         }, this.waitTime);
     }
 }
 
-export function StartCoroutine(func: () => IterableIterator<BlockingAction>): void {
-    BlockingAction.HandleNext(func());
+export function StartCoroutine(func: () => IterableIterator<Wait>): void {
+    Wait.HandleNext(func());
 }

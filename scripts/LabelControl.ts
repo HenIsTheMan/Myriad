@@ -4,6 +4,7 @@ import Reactive from 'Reactive';
 
 import {
     Wait,
+    WaitForMilliseconds,
     StartCoroutine
 } from './Coroutine'
 
@@ -30,13 +31,13 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
         NativeUI.setText("LabelText", text);
     });
 
-    function* MyRoutine(): IterableIterator<BlockingAction> {
+    function* MyRoutine(): IterableIterator<Wait> {
         const animDuration: number = 0.7;
         var animTime: number = 0.0;
 
         var lerpFactor: number = 0.0;
         var currElapsedTime: number = 0.0;
-        var prevElapsedTime: number = new Date().getTime() / 1000;
+        var prevElapsedTime: number = new Date().getTime() * 0.001;
 
         var currAlpha: ScalarSignal;
         const startAlpha: number = 1.0;
@@ -55,7 +56,7 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
         var endScale: number = 1.1;
 
         while(animDuration >= animTime) {
-            currElapsedTime = new Date().getTime() / 1000;
+            currElapsedTime = new Date().getTime() * 0.001;
 
             animTime += currElapsedTime - prevElapsedTime;
 
@@ -88,7 +89,7 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
 
             prevElapsedTime = currElapsedTime;
 
-            yield new Wait(0);
+            yield new WaitForMilliseconds(0);
         }
     }
 
