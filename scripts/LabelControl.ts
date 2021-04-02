@@ -11,7 +11,7 @@ function Lerp(start: number, end: number, lerpFactor: number): number {
     return (1 - lerpFactor) * start + lerpFactor * end;
 }
 
-export function LabelChange(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh): void {
+export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, canvas: Canvas, labelCanvas: Canvas): void {
     var text: string;
 
     rect.getMaterial().then((rectMtl: MaterialBase): void => {
@@ -41,11 +41,20 @@ export function LabelChange(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh): v
         const startAlpha: number = 1.0;
         const endAlpha: number = 0.0;
 
+        const canvasHalfWidth: ScalarSignal = canvas.width.mul(0.5);
+        const canvasHalfHeight: ScalarSignal = canvas.height.mul(0.5);
+        const labelCanvasBoundsWidth: ScalarSignal = labelCanvas.bounds.width;
+        const labelCanvasBoundsHeight: ScalarSignal = labelCanvas.bounds.height;
+        var currMultiplier: number = 0.0;
+        const startMultiplier: number = 0.2;
+        const endMultiplier: number = 0.8;
+
         while(animDuration >= animTime) {
             currElapsedTime = new Date().getTime() / 1000;
 
             animTime += currElapsedTime - prevElapsedTime;
 
+            //* Alpha
             currAlpha = Lerp(startAlpha, endAlpha, Math.min(1, animTime / animDuration));
 
             labelMesh.getMaterial().then((myMtl: MaterialBase): void => {
@@ -54,6 +63,14 @@ export function LabelChange(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh): v
             labelTextMesh.getMaterial().then((myMtl: MaterialBase): void => {
                 myMtl.opacity = Reactive.val(currAlpha);
             });
+            //*/
+
+            //* Pos
+            currMultiplier = Lerp(startMultiplier, endMultiplier, Math.min(1, animTime / animDuration));
+
+            labelCanvas.transform.x = canvasHalfWidth.sub(labelCanvasBoundsWidth.mul(0.5));
+            labelCanvas.transform.y = canvasHalfHeight.sub(labelCanvasBoundsHeight.mul(currMultiplier));
+            //*/
 
             prevElapsedTime = currElapsedTime;
 
@@ -66,14 +83,10 @@ export function LabelChange(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh): v
 
 (async function(): Promise<void> {
     const canvas: Canvas = await Scene.root.findFirst('Canvas') as Canvas;
-    const label: Canvas = await Scene.root.findFirst('Label') as Canvas;
-
-    label.transform.x = canvas.width.mul(0.5).sub(label.bounds.width.mul(0.5));
-    label.transform.y = canvas.height.mul(0.5).sub(label.bounds.height.mul(0.5));
-
+    const labelCanvas: Canvas = await Scene.root.findFirst('Label') as Canvas;
     const rect: Mesh = await Scene.root.findFirst('Rect') as Mesh;
     const labelMesh: Mesh = await Scene.root.findFirst('Label') as Mesh;
     const labelTextMesh: Mesh = await Scene.root.findFirst('LabelText') as Mesh;
 
-    LabelChange(labelMesh, labelTextMesh, rect);
+    ModifyLabel(labelMesh, labelTextMesh, rect, canvas, labelCanvas);
 })();

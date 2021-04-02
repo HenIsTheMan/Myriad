@@ -3,14 +3,16 @@ import Materials from 'Materials'
 import Scene from 'Scene';
 
 import {
-    LabelChange
+    ModifyLabel
 } from './LabelControl'
 
 export var currIndex: number = 0;
 
 (async function(): Promise<void> {
-    const rect: Mesh = await Scene.root.findFirst('Rect') as Mesh;
     const mtls: MaterialBase[] = await Materials.getAll() as MaterialBase[];
+    const canvas: Canvas = await Scene.root.findFirst('Canvas') as Canvas;
+    const labelCanvas: Canvas = await Scene.root.findFirst('Label') as Canvas;
+    const rect: Mesh = await Scene.root.findFirst('Rect') as Mesh;
     const labelMesh: Mesh = await Scene.root.findFirst('Label') as Mesh;
     const labelTextMesh: Mesh = await Scene.root.findFirst('LabelText') as Mesh;
 
@@ -25,6 +27,6 @@ export var currIndex: number = 0;
 
         rect.material = mtls[currIndex];
 
-        LabelChange(labelMesh, labelTextMesh, rect);
+        ModifyLabel(labelMesh, labelTextMesh, rect, canvas, labelCanvas);
     });
 })();
