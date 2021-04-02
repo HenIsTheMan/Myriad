@@ -34,10 +34,11 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
         const animDuration: number = 0.7;
         var animTime: number = 0.0;
 
+        var lerpFactor: number = 0.0;
         var currElapsedTime: number = 0.0;
         var prevElapsedTime: number = new Date().getTime() / 1000;
 
-        var currAlpha: number = 0.0;
+        var currAlpha: ScalarSignal;
         const startAlpha: number = 1.0;
         const endAlpha: number = 0.0;
 
@@ -45,31 +46,44 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
         const canvasHalfHeight: ScalarSignal = canvas.height.mul(0.5);
         const labelCanvasBoundsWidth: ScalarSignal = labelCanvas.bounds.width;
         const labelCanvasBoundsHeight: ScalarSignal = labelCanvas.bounds.height;
-        var currMultiplier: number = 0.0;
+        var currMultiplier: number;
         const startMultiplier: number = 0.2;
         const endMultiplier: number = 0.8;
+
+        var currScale: ScalarSignal;
+        var startScale: number = 0.9;
+        var endScale: number = 1.1;
 
         while(animDuration >= animTime) {
             currElapsedTime = new Date().getTime() / 1000;
 
             animTime += currElapsedTime - prevElapsedTime;
 
+            lerpFactor = Math.min(1, animTime / animDuration);
+
             //* Alpha
-            currAlpha = Lerp(startAlpha, endAlpha, Math.min(1, animTime / animDuration));
+            currAlpha = Reactive.val(Lerp(startAlpha, endAlpha, lerpFactor));
 
             labelMesh.getMaterial().then((myMtl: MaterialBase): void => {
-                myMtl.opacity = Reactive.val(currAlpha);
+                myMtl.opacity = currAlpha;
             });
             labelTextMesh.getMaterial().then((myMtl: MaterialBase): void => {
-                myMtl.opacity = Reactive.val(currAlpha);
+                myMtl.opacity = currAlpha;
             });
             //*/
 
             //* Pos
-            currMultiplier = Lerp(startMultiplier, endMultiplier, Math.min(1, animTime / animDuration));
+            currMultiplier = Lerp(startMultiplier, endMultiplier, lerpFactor);
 
             labelCanvas.transform.x = canvasHalfWidth.sub(labelCanvasBoundsWidth.mul(0.5));
             labelCanvas.transform.y = canvasHalfHeight.sub(labelCanvasBoundsHeight.mul(currMultiplier));
+            //*/
+
+            //* Scale
+            currScale = Reactive.val(Lerp(startScale, endScale, lerpFactor));
+
+            labelCanvas.transform.scaleX = currScale;
+            labelCanvas.transform.scaleY = currScale;
             //*/
 
             prevElapsedTime = currElapsedTime;
