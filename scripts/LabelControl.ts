@@ -92,7 +92,7 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
         }
     }
 
-    BlockingAction.startCoroutine(MyRoutine);
+    BlockingAction.StartCoroutine(MyRoutine);
 }
 
 (async function(): Promise<void> {

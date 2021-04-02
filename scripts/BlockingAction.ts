@@ -1,39 +1,33 @@
 import Time from 'Time';
 
 export abstract class BlockingAction {
-    type: string;
-    abstract setup(iter: IterableIterator<BlockingAction>): void;
-    handleNext(iter: IterableIterator<BlockingAction>): void {
-        let n = iter.next();
-        if (n.done)
-            return;
+    abstract Setup(iter: IterableIterator<BlockingAction>): void;
 
-        n.value.setup(iter);
+    protected static HandleNext(iter: IterableIterator<BlockingAction>): void {
+        let n = iter.next();
+        if(n.done) {
+            return;
+        }
+
+        n.value.Setup(iter);
     };
 
-    public static startCoroutine(func: () => IterableIterator<BlockingAction>): void {
-        let iter = func();
-        let n = iter.next();
-        if (n.done)
-            return;
-
-        n.value.setup(iter);
+    public static StartCoroutine(func: () => IterableIterator<BlockingAction>): void {
+        BlockingAction.HandleNext(func());
     }
 }
 
 export class Wait extends BlockingAction {
-    wait: number;
+    private waitTime: number;
 
-    constructor(timeout: number) {
+    constructor(waitTime: number) {
         super();
-        this.wait = timeout;
+        this.waitTime = waitTime;
     }
 
-    setup(iter: IterableIterator<BlockingAction>): void {
-        let t = this;
-
-        let timerID = Time.setTimeout(function () {
-            t.handleNext(iter);
-        }, this.wait);
+    Setup(iter: IterableIterator<BlockingAction>): void {
+        let timerID = Time.setTimeout(function(): void {
+            BlockingAction.HandleNext(iter);
+        }, this.waitTime);
     }
 }
