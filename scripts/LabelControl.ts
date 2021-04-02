@@ -3,9 +3,9 @@ import NativeUI from 'NativeUI';
 import Reactive from 'Reactive';
 
 import {
-    BlockingAction,
-    Wait
-} from './BlockingAction'
+    Wait,
+    StartCoroutine
+} from './Coroutine'
 
 function Lerp(start: number, end: number, lerpFactor: number): number {
     return (1 - lerpFactor) * start + lerpFactor * end;
@@ -92,7 +92,7 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
         }
     }
 
-    BlockingAction.StartCoroutine(MyRoutine);
+    StartCoroutine(MyRoutine);
 }
 
 (async function(): Promise<void> {
