@@ -32,16 +32,17 @@ export var currIndex: number = 0;
         ModifyLabel(labelMesh, labelTextMesh, rect, canvas, labelCanvas);
     };
 
-    const sub: Subscription = TouchGestures.onTap(cover).subscribe((event: TapGesture): void => {
+    const touchSub: Subscription = TouchGestures.onTap(cover).subscribe((event: TapGesture): void => {
         MtlChange();
 
         cover.getMaterial().then((myMtl: MaterialBase): void => {
             myMtl.opacity = Reactive.val(0.0);
         });
 
-        sub.unsubscribe();
-    });
-    TouchGestures.onLongPress(rect).subscribe((event: LongPressGesture): void => {
-        MtlChange();
+        touchSub.unsubscribe();
+
+        const longPressSub: Subscription = TouchGestures.onLongPress(rect).subscribe((event: LongPressGesture): void => {
+            MtlChange();
+        });
     });
 })();
