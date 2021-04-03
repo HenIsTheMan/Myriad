@@ -25,7 +25,7 @@ export var currIndex: number = 0;
             } else {
                 ++currIndex;
             }
-        } while (mtls[currIndex].name == "BgMtl" || mtls[currIndex].name == "TextMtl" || mtls[currIndex].name == "RegularMtl");
+        } while (mtls[currIndex].name == "BgMtl" || mtls[currIndex].name == "TextMtl" || mtls[currIndex].name == "RegularMtl" || mtls[currIndex].name == "CoverMtl");
 
         rect.material = mtls[currIndex];
 
