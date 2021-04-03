@@ -13,6 +13,8 @@ function Lerp(start: number, end: number, lerpFactor: number): number {
 
 export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, canvas: Canvas, labelCanvas: Canvas): void {
     function* MyRoutine(): IterableIterator<Wait> {
+        yield new WaitForMilliseconds(0);
+
         const animDuration: number = 0.7;
         var animTime: number = 0.0;
 
@@ -38,7 +40,7 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
 
         var isFirstTick: boolean = true;
 
-        while (animDuration >= animTime) {
+        while(animDuration >= animTime) {
             currElapsedTime = new Date().getTime() * 0.001;
 
             animTime += currElapsedTime - prevElapsedTime;
