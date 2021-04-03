@@ -12,24 +12,6 @@ function Lerp(start: number, end: number, lerpFactor: number): number {
 }
 
 export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, canvas: Canvas, labelCanvas: Canvas): void {
-    var text: string;
-
-    rect.getMaterial().then((rectMtl: MaterialBase): void => {
-        text = rectMtl.name;
-        text = text.substr(0, text.length - 3);
-
-        var limit: number = text.length;
-        for(var i: number = 1; i < limit; ++i) {
-            if(text[i] == text[i].toUpperCase()) { //If UpperCase...
-                text = text.substring(0, i) + ' ' + text.substring(i, limit);
-                ++limit;
-                i += 2;
-            }
-        }
-
-        NativeUI.setText("LabelText", text);
-    });
-
     function* MyRoutine(): IterableIterator<Wait> {
         const animDuration: number = 0.7;
         var animTime: number = 0.0;
@@ -92,5 +74,23 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
         }
     }
 
-    StartCoroutine(MyRoutine);
+    var text: string;
+
+    rect.getMaterial().then((rectMtl: MaterialBase): void => {
+        text = rectMtl.name;
+        text = text.substr(0, text.length - 3);
+
+        var limit: number = text.length;
+        for (var i: number = 1; i < limit; ++i) {
+            if (text[i] == text[i].toUpperCase()) { //If UpperCase...
+                text = text.substring(0, i) + ' ' + text.substring(i, limit);
+                ++limit;
+                i += 2;
+            }
+        }
+
+        NativeUI.setText("LabelText", text);
+
+        StartCoroutine(MyRoutine);
+    });
 }
