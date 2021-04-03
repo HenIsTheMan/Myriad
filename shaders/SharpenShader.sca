@@ -12,25 +12,70 @@ namespace {
 
         return fragColor;
     };
+
+    vec4 ApplyKernel(vec4 color, vec2 offsets[9], float kernel[9]){
+        vec4 fragColor = vec4(0.0);
+
+        for(int i = 0; i < 9; ++i){
+            fragColor += color * kernel[i];
+        }
+
+        fragColor.a = 1.0;
+
+        return fragColor;
+    };
 }
 
-void MyFunc(inout float kernel[9], float size, float sigma, float lambda, float theta, float psi, float gamma){
-    float sigmaX = sigma;
-    float sigmaY = sigma / gamma;
+void MyFunc(inout float kernel[9], float size, float sigma, float lambda, float thetaFake, float psi, float gamma){
+    // Frequency of the sinusoidal component
+    float Fx = 3.0;
 
-    float xMax = max(abs(size * sigmaX * cos(theta)), abs(size * sigmaY * sin(theta)));
+    // Number of diferent orientation angles to use
+    int nAngles = 5;
+
+    float sigma_x = sigma;
+    float sigma_y = sigma / gamma;
+    float sigma_x2 = sigma_x * sigma_x;
+    float sigma_y2 = sigma_y * sigma_y;
+
+    // Decide size of the filters based on the sigma
+    int largerSigma = (sigma_x > sigma_y) ? int(sigma_x) : int(sigma_y);
+    if(largerSigma < 1){
+        largerSigma = 1;
+    }
+
+    float filterSizeX = 3.0; //6 * largerSigma + 1;
+    float filterSizeY = 3.0; //6 * largerSigma + 1;
+ 
+    //int middleX = int(round(filterSizeX / 2));
+    //int middleY = int(round(filterSizeY / 2));
+ 
+    float rotationAngle = 3.14 / float(nAngles);
+
+    for(int i = 0; i < nAngles; ++i){   
+        float theta = rotationAngle * float(i);
+
+        for(int x = 1; x <= 3; ++x){
+            for(int y = 1; y <= 3; ++y){           
+                float xPrime = float(x) * cos(theta) + float(y) * sin(theta);
+                float yPrime = float(y) * cos(theta) - float(x) * sin(theta);
+                 
+                float a = 1.0 / ( 2.0 * 3.14 * sigma_x * sigma_y ) * exp(-0.5 * (xPrime*xPrime / sigma_x2 + yPrime*yPrime / sigma_y2) );
+                float c = cos( 2.0 * 3.14 * (Fx * xPrime) / filterSizeX + psi); 
+             
+                kernel[(y - 1) * 3 + (x - 1)] = a * c;
+            }
+        }
+    }
+
+    /*float xMax = max(abs(size * sigmaX * cos(theta)), abs(size * sigmaY * sin(theta)));
     xMax = ceil(max(1.0, xMax));
 
     float yMax = max(abs(size * sigmaX * sin(theta)), abs(size * sigmaY * cos(theta)));
     yMax = ceil(max(1.0, yMax));
 
     float xMin = -xMax;
-    float yMin = -yMax;
-
-    //List<int> xValues = Matrix.Vector(xMin, xMax, increment: 1);
-    //List<int> yValues = Matrix.Vector(yMin, yMax, increment: 1);
-
-    //return new Matrix(xValues.Count, yValues.Count);
+    float yMin = -yMax;*/
 }
 
 void Test(inout float kernel[9], float theta){
@@ -42,7 +87,7 @@ void Test(inout float kernel[9], float theta){
     float gamma = sqrt(2.0);
     float eta = sqrt(2.0);
 
-    float fu = fmax / (sqrt(0.6) * sqrt(0.6)); //i - 1
+    float fu = fmax / (sqrt(0.62) * sqrt(0.62)); //i - 1
     float alpha = fu/gamma;
     float beta = fu/eta;
 
@@ -76,10 +121,12 @@ vec4 main(std::Texture2d tex) {
     const float sharpenForce = 2.0;
 
     float kernel[9];
-    //MyFunc(kernel, 3, 8.0, 3.14, pi / 4.0 * 0.0, sqrt(2.0));
-    for(float i = 0.0; i <= 5.0; ++i){
+    MyFunc(kernel, 3.0, 0.25 / (sqrt(0.62) * sqrt(0.62)), 3.14, 0.0, 5.0, sqrt(2.0));
+    /*for(float i = 0.0; i <= 5.0; ++i){
         Test(kernel, 3.14 * i / 5.0);
-    }
+    }*/
 
-	return ApplyKernel(tex, fragment(std::getVertexTexCoord()), offsets, kernel);
+    vec4 color = ApplyKernel(tex, fragment(std::getVertexTexCoord()), offsets, kernel);
+
+	return color;
 }
