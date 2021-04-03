@@ -1,5 +1,6 @@
 namespace {
     const float offsetVal = 1.0 / 300.0;
+    const float sharpenForce = 2.0;
 
     vec4 ApplyKernel(std::Texture2d tex, vec2 UV, vec2 offsets[9], float kernel[9]){
         vec4 fragColor = vec4(0.0);
@@ -26,8 +27,6 @@ vec4 main(std::Texture2d tex) {
         vec2(0.0, -offsetVal),
         vec2(offsetVal, -offsetVal)
     };
-
-    const float sharpenForce = 2.0;
 
     float kernel[9] = {
         0.0,
