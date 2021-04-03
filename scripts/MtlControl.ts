@@ -23,7 +23,7 @@ export var currIndex: number = 0;
             } else {
                 ++currIndex;
             }
-        } while(mtls[currIndex].name == "BgMtl" || mtls[currIndex].name == "TextMtl");
+        } while(mtls[currIndex].name == "BgMtl" || mtls[currIndex].name == "TextMtl" || mtls[currIndex].name == "RegularMtl");
 
         rect.material = mtls[currIndex];
 
