@@ -22,12 +22,12 @@ export var currIndex: number = 0;
 
     let MtlChange = (): void => {
         do {
-            if (currIndex == mtls.length - 1) {
+            if(currIndex == mtls.length - 1) {
                 currIndex = 0;
             } else {
                 ++currIndex;
             }
-        } while (
+        } while(
             mtls[currIndex].name == "BgMtl"
             || mtls[currIndex].name == "TextMtl"
             || mtls[currIndex].name == "RegularMtl"

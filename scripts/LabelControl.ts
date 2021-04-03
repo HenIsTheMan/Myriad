@@ -36,7 +36,9 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
         var startScale: number = 0.9;
         var endScale: number = 1.1;
 
-        while(animDuration >= animTime) {
+        var isFirstTick: boolean = true;
+
+        while (animDuration >= animTime) {
             currElapsedTime = new Date().getTime() * 0.001;
 
             animTime += currElapsedTime - prevElapsedTime;
@@ -44,14 +46,18 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
             lerpFactor = Math.min(1, animTime / animDuration);
 
             //* Alpha
-            currAlpha = Reactive.val(Lerp(startAlpha, endAlpha, lerpFactor));
+            if(!isFirstTick) {
+                currAlpha = Reactive.val(Lerp(startAlpha, endAlpha, lerpFactor));
 
-            labelMesh.getMaterial().then((myMtl: MaterialBase): void => {
-                myMtl.opacity = currAlpha;
-            });
-            labelTextMesh.getMaterial().then((myMtl: MaterialBase): void => {
-                myMtl.opacity = currAlpha;
-            });
+                labelMesh.getMaterial().then((myMtl: MaterialBase): void => {
+                    myMtl.opacity = currAlpha;
+                });
+                labelTextMesh.getMaterial().then((myMtl: MaterialBase): void => {
+                    myMtl.opacity = currAlpha;
+                });
+            } else {
+                isFirstTick = false;
+            }
             //*/
 
             //* Pos
@@ -81,7 +87,7 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
         text = text.substr(0, text.length - 3);
 
         var limit: number = text.length;
-        for (var i: number = 1; i < limit; ++i) {
+        for(var i: number = 1; i < limit; ++i) {
             if (text[i] == text[i].toUpperCase()) { //If UpperCase...
                 text = text.substring(0, i) + ' ' + text.substring(i, limit);
                 ++limit;
