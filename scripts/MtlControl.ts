@@ -16,7 +16,9 @@ export var currIndex: number = 0;
     const rect: Mesh = await Scene.root.findFirst('Rect') as Mesh;
     const labelMesh: Mesh = await Scene.root.findFirst('Label') as Mesh;
     const labelTextMesh: Mesh = await Scene.root.findFirst('LabelText') as Mesh;
+
     const cover: Mesh = await Scene.root.findFirst('Cover') as Mesh;
+    const coverText: Mesh = await Scene.root.findFirst('CoverText') as Mesh;
 
     let MtlChange = (): void => {
         do {
@@ -25,7 +27,13 @@ export var currIndex: number = 0;
             } else {
                 ++currIndex;
             }
-        } while (mtls[currIndex].name == "BgMtl" || mtls[currIndex].name == "TextMtl" || mtls[currIndex].name == "RegularMtl" || mtls[currIndex].name == "CoverMtl");
+        } while (
+            mtls[currIndex].name == "BgMtl"
+            || mtls[currIndex].name == "TextMtl"
+            || mtls[currIndex].name == "RegularMtl"
+            || mtls[currIndex].name == "CoverMtl"
+            || mtls[currIndex].name == "CoverTextMtl"
+        );
 
         rect.material = mtls[currIndex];
 
@@ -36,6 +44,9 @@ export var currIndex: number = 0;
         MtlChange();
 
         cover.getMaterial().then((myMtl: MaterialBase): void => {
+            myMtl.opacity = Reactive.val(0.0);
+        });
+        coverText.getMaterial().then((myMtl: MaterialBase): void => {
             myMtl.opacity = Reactive.val(0.0);
         });
 
