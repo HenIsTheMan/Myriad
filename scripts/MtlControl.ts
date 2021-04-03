@@ -1,6 +1,7 @@
 import TouchGestures from 'TouchGestures';
 import Materials from 'Materials'
 import Scene from 'Scene';
+import Reactive from 'Reactive';
 
 import {
     ModifyLabel
@@ -15,6 +16,7 @@ export var currIndex: number = 0;
     const rect: Mesh = await Scene.root.findFirst('Rect') as Mesh;
     const labelMesh: Mesh = await Scene.root.findFirst('Label') as Mesh;
     const labelTextMesh: Mesh = await Scene.root.findFirst('LabelText') as Mesh;
+    const cover: Mesh = await Scene.root.findFirst('Cover') as Mesh;
 
     let MtlChange = (): void => {
         do {
@@ -30,8 +32,15 @@ export var currIndex: number = 0;
         ModifyLabel(labelMesh, labelTextMesh, rect, canvas, labelCanvas);
     };
 
-    MtlChange();
+    const sub: Subscription = TouchGestures.onTap(cover).subscribe((event: TapGesture): void => {
+        MtlChange();
 
+        cover.getMaterial().then((myMtl: MaterialBase): void => {
+            myMtl.opacity = Reactive.val(0.0);
+        });
+
+        sub.unsubscribe();
+    });
     TouchGestures.onLongPress(rect).subscribe((event: LongPressGesture): void => {
         MtlChange();
     });
