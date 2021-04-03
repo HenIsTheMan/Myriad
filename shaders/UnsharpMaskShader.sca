@@ -1,6 +1,6 @@
 namespace {
-    const float offsetVal = 1.0 / 300.0;
-    const float sharpenForce = 1.0;
+    const float offsetVal = 1.0 / 50.0;
+    const float sharpenForce = 4.0;
     const float multiplier = -1.0 / 256.0;
 
     vec4 ApplyKernel(std::Texture2d tex, vec2 UV, vec2 offsets[25], float kernel[25]){
