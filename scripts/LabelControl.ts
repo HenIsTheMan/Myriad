@@ -1,4 +1,3 @@
-import Scene from 'Scene';
 import NativeUI from 'NativeUI';
 import Reactive from 'Reactive';
 
@@ -95,13 +94,3 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
 
     StartCoroutine(MyRoutine);
 }
-
-(async function(): Promise<void> {
-    const canvas: Canvas = await Scene.root.findFirst('Canvas') as Canvas;
-    const labelCanvas: Canvas = await Scene.root.findFirst('Label') as Canvas;
-    const rect: Mesh = await Scene.root.findFirst('Rect') as Mesh;
-    const labelMesh: Mesh = await Scene.root.findFirst('Label') as Mesh;
-    const labelTextMesh: Mesh = await Scene.root.findFirst('LabelText') as Mesh;
-
-    ModifyLabel(labelMesh, labelTextMesh, rect, canvas, labelCanvas);
-})();

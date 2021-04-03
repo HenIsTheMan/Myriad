@@ -16,17 +16,23 @@ export var currIndex: number = 0;
     const labelMesh: Mesh = await Scene.root.findFirst('Label') as Mesh;
     const labelTextMesh: Mesh = await Scene.root.findFirst('LabelText') as Mesh;
 
-    TouchGestures.onLongPress(rect).subscribe((event: LongPressGesture): void => {
+    let MtlChange = (): void => {
         do {
-            if(currIndex == mtls.length - 1) {
+            if (currIndex == mtls.length - 1) {
                 currIndex = 0;
             } else {
                 ++currIndex;
             }
-        } while(mtls[currIndex].name == "BgMtl" || mtls[currIndex].name == "TextMtl" || mtls[currIndex].name == "RegularMtl");
+        } while (mtls[currIndex].name == "BgMtl" || mtls[currIndex].name == "TextMtl" || mtls[currIndex].name == "RegularMtl");
 
         rect.material = mtls[currIndex];
 
         ModifyLabel(labelMesh, labelTextMesh, rect, canvas, labelCanvas);
+    };
+
+    MtlChange();
+
+    TouchGestures.onLongPress(rect).subscribe((event: LongPressGesture): void => {
+        MtlChange();
     });
 })();
