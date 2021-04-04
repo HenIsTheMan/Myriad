@@ -17,9 +17,6 @@ export var currIndex: number = 0;
     const labelMesh: Mesh = await Scene.root.findFirst('Label') as Mesh;
     const labelTextMesh: Mesh = await Scene.root.findFirst('LabelText') as Mesh;
 
-    const cover: Mesh = await Scene.root.findFirst('Cover') as Mesh;
-    const coverText: Mesh = await Scene.root.findFirst('CoverText') as Mesh;
-
     let MtlChange = (): void => {
         do {
             if(currIndex == mtls.length - 1) {
@@ -31,8 +28,6 @@ export var currIndex: number = 0;
             mtls[currIndex].name == "BgMtl"
             || mtls[currIndex].name == "TextMtl"
             || mtls[currIndex].name == "RegularMtl"
-            || mtls[currIndex].name == "CoverMtl"
-            || mtls[currIndex].name == "CoverTextMtl"
         );
 
         rect.material = mtls[currIndex];
@@ -40,20 +35,9 @@ export var currIndex: number = 0;
         ModifyLabel(labelMesh, labelTextMesh, rect, canvas, labelCanvas);
     };
 
-    const touchSub: Subscription = TouchGestures.onTap(cover).subscribe((event: TapGesture): void => {
+    MtlChange();
+
+    const longPressSub: Subscription = TouchGestures.onLongPress(rect).subscribe((event: LongPressGesture): void => {
         MtlChange();
-
-        cover.getMaterial().then((myMtl: MaterialBase): void => {
-            myMtl.opacity = Reactive.val(0.0);
-        });
-        coverText.getMaterial().then((myMtl: MaterialBase): void => {
-            myMtl.opacity = Reactive.val(0.0);
-        });
-
-        touchSub.unsubscribe();
-
-        const longPressSub: Subscription = TouchGestures.onLongPress(rect).subscribe((event: LongPressGesture): void => {
-            MtlChange();
-        });
     });
 })();
