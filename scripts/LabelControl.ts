@@ -90,7 +90,7 @@ export function ModifyLabel(labelMesh: Mesh, labelTextMesh: Mesh, rect: Mesh, ca
 
         var limit: number = text.length;
         for(var i: number = 1; i < limit; ++i) {
-            if (text[i] == text[i].toUpperCase()) { //If UpperCase...
+            if(text[i] == text[i].toUpperCase()) { //If UpperCase...
                 text = text.substring(0, i) + ' ' + text.substring(i, limit);
                 ++limit;
                 i += 2;
