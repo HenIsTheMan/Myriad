@@ -1,7 +1,7 @@
 namespace {
-    const float offsetVal = 1.0 / 200.0;
-    const float sharpenForce = 4000.0;
-    const float multiplier = -1.0 / 256.0;
+    const float amt = 4.4;
+    const float offsetVal = 1.0 / 300.0;
+    const float multiplier = 1.0 / 256.0;
 
     vec4 ApplyKernel(std::Texture2d tex, vec2 UV, vec2 offsets[25], float kernel[25]){
         vec4 fragColor = vec4(0.0);
@@ -18,37 +18,39 @@ namespace {
 
 vec4 main(std::Texture2d tex) {
     vec2 offsets[25] = {
-	    vec2(-offsetVal, offsetVal),
-	    vec2(-offsetVal * 2.0 / 3.0, offsetVal),
-	    vec2(-offsetVal * 1.0 / 3.0, offsetVal),
+    	vec2(-offsetVal * 0.5, offsetVal * 0.5),
+    	vec2(-offsetVal, offsetVal),
+    	vec2(-offsetVal * 1.5, offsetVal * 1.5),
+
+        vec2(0.0 * 0.5, offsetVal * 0.5),
         vec2(0.0, offsetVal),
-        vec2(offsetVal * 1.0 / 3.0, offsetVal),
-        vec2(offsetVal * 2.0 / 3.0, offsetVal),
+        vec2(0.0 * 1.5, offsetVal * 1.5),
+
+        vec2(offsetVal * 0.5, offsetVal * 0.5),
         vec2(offsetVal, offsetVal),
+        vec2(offsetVal * 1.5, offsetVal * 1.5),
 
-        vec2(-offsetVal, offsetVal * 2.0 / 3.0),
-        vec2(offsetVal, offsetVal * 2.0 / 3.0),
-
-        vec2(-offsetVal, offsetVal * 1.0 / 3.0),
-        vec2(offsetVal, offsetVal * 1.0 / 3.0),
-
+        vec2(-offsetVal * 0.5, 0.0 * 0.5),
         vec2(-offsetVal, 0.0),
+        vec2(-offsetVal * 1.5, 0.0 * 1.5),
+
         vec2(0.0, 0.0),
+
+        vec2(offsetVal * 0.5, 0.0 * 0.5),
         vec2(offsetVal, 0.0),
+        vec2(offsetVal * 1.5, 0.0 * 1.5),
 
-        vec2(-offsetVal, -offsetVal * 1.0 / 3.0),
-        vec2(offsetVal, -offsetVal * 1.0 / 3.0),
+        vec2(-offsetVal * 0.5, -offsetVal * 0.5),
+        vec2(-offsetVal, -offsetVal),
+        vec2(-offsetVal * 1.5, -offsetVal * 1.5),
 
-        vec2(-offsetVal, -offsetVal * 2.0 / 3.0),
-        vec2(offsetVal, -offsetVal * 2.0 / 3.0),
-
-	    vec2(-offsetVal, -offsetVal),
-	    vec2(-offsetVal * 2.0 / 3.0, -offsetVal),
-	    vec2(-offsetVal * 1.0 / 3.0, -offsetVal),
+        vec2(0.0 * 0.5, -offsetVal * 0.5),
         vec2(0.0, -offsetVal),
-        vec2(offsetVal * 1.0 / 3.0, -offsetVal),
-        vec2(offsetVal * 2.0 / 3.0, -offsetVal),
-        vec2(offsetVal, -offsetVal)
+        vec2(0.0 * 1.5, -offsetVal * 1.5),
+
+        vec2(offsetVal * 0.5, -offsetVal * 0.5),
+        vec2(offsetVal, -offsetVal),
+        vec2(offsetVal * 1.5, -offsetVal * 1.5)
     };
 
     float kernel[25] = {
@@ -66,7 +68,7 @@ vec4 main(std::Texture2d tex) {
 
         6.0 * multiplier,
         24.0 * multiplier,
-        -476.0 * multiplier,
+        36.0 * multiplier,
         24.0 * multiplier,
         6.0 * multiplier,
 
@@ -83,5 +85,6 @@ vec4 main(std::Texture2d tex) {
         1.0 * multiplier
     };
 
-	return ApplyKernel(tex, fragment(std::getVertexTexCoord()), offsets, kernel);
+    vec4 fragColorOG = tex.sample(fragment(std::getVertexTexCoord()));
+	return fragColorOG + (fragColorOG - ApplyKernel(tex, fragment(std::getVertexTexCoord()), offsets, kernel)) * amt;
 }
