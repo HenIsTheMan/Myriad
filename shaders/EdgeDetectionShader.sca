@@ -1,0 +1,43 @@
+namespace {
+    const float offsetVal = 1.0 / 300.0;
+
+    vec4 ApplyKernel(std::Texture2d tex, vec2 UV, vec2 offsets[9], float kernel[9]){
+        vec4 fragColor = vec4(0.0);
+
+        for(int i = 0; i < 9; ++i){
+            fragColor += tex.sample(UV + offsets[i]) * kernel[i];
+        }
+
+        fragColor.a = 1.0;
+
+        return fragColor;
+    };
+}
+
+vec4 main(std::Texture2d tex) {
+    vec2 offsets[9] = {
+	    vec2(-offsetVal, offsetVal),
+        vec2(0.0, offsetVal),
+        vec2(offsetVal, offsetVal),
+        vec2(-offsetVal, 0.0),
+        vec2(0.0, 0.0),
+        vec2(offsetVal, 0.0),
+        vec2(-offsetVal, -offsetVal),
+        vec2(0.0, -offsetVal),
+        vec2(offsetVal, -offsetVal)
+    };
+
+    float kernel[9] = {
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        8.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0
+    };
+
+	return ApplyKernel(tex, fragment(std::getVertexTexCoord()), offsets, kernel);
+}
